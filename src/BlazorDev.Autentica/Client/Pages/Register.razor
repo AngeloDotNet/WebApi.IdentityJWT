@@ -1,0 +1,56 @@
+﻿@page "/register"
+@inject HttpClient httpClient
+<h3>Register</h3>
+
+@if(registeredWithSuccess == false)
+{
+   <EditForm Model="userToRegister" OnValidSubmit="RegisterUser">
+    <DataAnnotationsValidator />
+    <ValidationSummary></ValidationSummary>
+    <div class="form-group my-3">
+        <label for="email">Email address</label>
+        <InputText @bind-Value="userToRegister.Email" id="email" class="form-control" />
+        <ValidationMessage For="() => userToRegister.Email"/>
+    </div>
+    <div class="form-group my-3">
+        <label for="password">Password</label>
+        <InputText @bind-Value="userToRegister.Password" type="password" id="email" class="form-control" />
+        <ValidationMessage For="() => userToRegister.Password"/>
+    </div>
+    <button class="btn btn-primary" type="submit">OK</button>
+
+    @if(attemptFailed == true)
+    {
+        <p class="my-3 text-danger">@attemptRegisterFailedErrorMessage</p>
+    }
+    </EditForm>
+} else
+{
+    <h4>Register successful</h4>
+    <a href="/signin" class="btn btn-primary">Login</a>
+}
+
+
+@code {
+    private RegisterInputModel userToRegister = new();
+    private bool registeredWithSuccess = false;
+    private bool attemptFailed = false;
+    private string attemptRegisterFailedErrorMessage = null;
+
+    private async Task RegisterUser()
+    {
+        HttpResponseMessage httpResponseMessage =
+        await httpClient.PostAsJsonAsync("https://localhost:44375/api/accounts/register", userToRegister);
+
+        if (httpResponseMessage.IsSuccessStatusCode)
+        {
+            registeredWithSuccess = true;
+        }
+        else
+        {
+            attemptRegisterFailedErrorMessage =
+                await httpResponseMessage.Content.ReadAsStringAsync();
+            attemptFailed = true;
+        }
+    }
+}

@@ -1,0 +1,61 @@
+﻿@page "/signin"
+@inject HttpClient httpClient
+@inject ILocalStorageService storageService
+@inject AuthenticationStateProvider authenticationStateProvider
+<h3>SignIn</h3>
+
+@if(signedInWithSuccess == false)
+{
+   <EditForm Model="userToSignIn" OnValidSubmit="SignInUser">
+    <DataAnnotationsValidator />
+    <ValidationSummary></ValidationSummary>
+    <div class="form-group my-3">
+        <label for="email">Email address</label>
+        <InputText @bind-Value="userToSignIn.Email" id="email" class="form-control" />
+        <ValidationMessage For="() => userToSignIn.Email"/>
+    </div>
+    <div class="form-group my-3">
+        <label for="password">Password</label>
+        <InputText @bind-Value="userToSignIn.Password" type="password" id="password" class="form-control" />
+        <ValidationMessage For="() => userToSignIn.Password"/>
+    </div>
+    <button class="btn btn-primary" type="submit">OK</button>
+
+    @if(attemptFailed == true)
+    {
+        <p class="my-3 text-danger">Sign in failed</p>
+    }
+    </EditForm>
+} else
+{
+    <h4>Sign in successful</h4>
+    <a href="/fetchdata" class="btn btn-primary">Fetch data</a>
+}
+
+
+@code {
+    private RegisterInputModel userToSignIn = new();
+    private bool signedInWithSuccess = false;
+    private bool attemptFailed = false;
+
+    private async Task SignInUser()
+    {
+        HttpResponseMessage httpResponseMessage = await httpClient.PostAsJsonAsync("https://localhost:44375/api/accounts/signin", userToSignIn);
+
+        if (httpResponseMessage.IsSuccessStatusCode)
+        {
+            signedInWithSuccess = true;
+            
+            string jwtToken = await httpResponseMessage.Content.ReadAsStringAsync();
+            
+            await storageService.SetItemAsync("bearerToken", jwtToken);
+            await ((AppAuthenticationStateProvider)authenticationStateProvider).SignIn();
+            
+            httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("bearer", jwtToken);
+        }
+        else
+        {
+            attemptFailed = true;
+        }
+    }
+}
