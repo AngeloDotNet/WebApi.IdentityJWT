@@ -46,9 +46,53 @@ namespace BlazorDev.Autentica.Server
                 });
             });
 
-            services.AddIdentity<IdentityUser, IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>()
-                .AddDefaultTokenProviders();
+            //* * * * * SOLUZIONE 1 * * * * *
+            //services.AddIdentity<IdentityUser, IdentityRole>()
+            //    .AddEntityFrameworkStores<ApplicationDbContext>()
+            //    .AddDefaultTokenProviders();
+
+            //* * * * * SOLUZIONE 2 * * * * *
+            //services.AddDefaultIdentity<IdentityUser>()
+            //    .AddRoles<IdentityRole>()
+            //    .AddEntityFrameworkStores<ApplicationDbContext>()
+            //    .AddDefaultTokenProviders();
+
+            //* * * * * SOLUZIONE 3 * * * * *
+            //services.AddIdentity<IdentityUser, IdentityRole>(options =>
+            //{
+            //    options.User.RequireUniqueEmail = true;
+            //    options.Password.RequiredLength = 6;
+            //    options.Password.RequireNonAlphanumeric = true;
+            //    options.Password.RequireDigit = true;
+            //    options.Password.RequireLowercase = true;
+            //    options.Password.RequireUppercase = true;
+            //})
+            //.AddEntityFrameworkStores<ApplicationDbContext>()
+            //.AddDefaultTokenProviders();
+
+            //* * * * * SOLUZIONE 4 * * * * *
+            var identityBuilder = services.AddDefaultIdentity<IdentityUser>(options => {
+
+                // Criteri di validazione della password
+                options.Password.RequireDigit = true;
+                options.Password.RequiredLength = 8;
+                options.Password.RequireUppercase = true;
+                options.Password.RequireLowercase = true;
+                options.Password.RequireNonAlphanumeric = true;
+                options.Password.RequiredUniqueChars = 4;
+
+                // Conferma dell'account
+                options.SignIn.RequireConfirmedAccount = false;
+
+                // Blocco dell'account
+                options.Lockout.AllowedForNewUsers = true;
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+            });
+
+            identityBuilder.AddRoles<IdentityRole>();
+            identityBuilder.AddEntityFrameworkStores<ApplicationDbContext>();
+            identityBuilder.AddDefaultTokenProviders();
 
             services.AddAuthentication(options =>
             {
@@ -56,25 +100,23 @@ namespace BlazorDev.Autentica.Server
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             })
-
-            // Adding Jwt Bearer  
-            .AddJwtBearer(options =>
-            {
-                options.SaveToken = true;
-                options.RequireHttpsMetadata = false;
-                options.TokenValidationParameters = new TokenValidationParameters()
+                .AddJwtBearer(options =>
                 {
-                    ValidateIssuer = true,
-                    ValidIssuer = Configuration["Jwt:Issuer"],
-                    ValidateAudience = true,
-                    ValidAudience = Configuration["Jwt:Audience"],
-                    ValidateLifetime = true,
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecurityKey"])),
-                    RequireExpirationTime = true,
-                    ClockSkew = TimeSpan.Zero
-                };
-            });
+                    options.SaveToken = true;
+                    options.RequireHttpsMetadata = false;
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidIssuer = Configuration["Jwt:Issuer"],
+                        ValidateAudience = true,
+                        ValidAudience = Configuration["Jwt:Audience"],
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true,
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecurityKey"])),
+                        RequireExpirationTime = true,
+                        ClockSkew = TimeSpan.Zero
+                    };
+                });
 
             services.AddSwaggerGen(swagger =>
             {

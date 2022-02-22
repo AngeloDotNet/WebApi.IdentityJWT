@@ -97,8 +97,15 @@ namespace BlazorDev.Autentica.Server.Controllers
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 }.Union(roleNames.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(configuration["Jwt:Issuer"], configuration["Jwt:Audience"], claims, 
-                DateTime.UtcNow, DateTime.UtcNow.AddMinutes(10), credentials);
+            //* * * * * Scadenza token: 10 minuti * * * * *
+            //JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(configuration["Jwt:Issuer"], configuration["Jwt:Audience"], claims, 
+            //    DateTime.UtcNow, DateTime.UtcNow.AddMinutes(10), credentials);
+
+            //* * * * * Scadenza token: 60 minuti (lettura valore dal file di configurazione appsettings.json * * * * *
+            int expirationToken = Int32.Parse(configuration["Jwt:AccessTokenExpirationMinutes"]);
+
+            JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(configuration["Jwt:Issuer"], configuration["Jwt:Audience"], claims,
+                DateTime.UtcNow, DateTime.UtcNow.AddMinutes(expirationToken), credentials);
 
             return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
         }
