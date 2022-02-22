@@ -46,30 +46,9 @@ namespace BlazorDev.Autentica.Server
                 });
             });
 
-            //services.AddDefaultIdentity<IdentityUser>()
-            //    .AddRoles<IdentityRole>()
-            //    .AddEntityFrameworkStores<ApplicationDbContext>();
-
             services.AddIdentity<IdentityUser, IdentityRole>()
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
-
-            //services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-            //    .AddJwtBearer(options =>
-            //    {
-            //        options.TokenValidationParameters = new TokenValidationParameters
-            //        {
-            //            ValidateIssuer = true,
-            //            ValidIssuer = Configuration["Jwt:Issuer"],
-            //            ValidateAudience = true,
-            //            ValidAudience = Configuration["Jwt:Audience"],
-            //            ValidateLifetime = true,
-            //            ValidateIssuerSigningKey = true,
-            //            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:SecurityKey"])),
-            //            RequireExpirationTime = true,
-            //            ClockSkew = TimeSpan.Zero
-            //        };
-            //    });
 
             services.AddAuthentication(options =>
             {
@@ -85,12 +64,6 @@ namespace BlazorDev.Autentica.Server
                 options.RequireHttpsMetadata = false;
                 options.TokenValidationParameters = new TokenValidationParameters()
                 {
-                    //ValidateIssuer = true,
-                    //ValidateAudience = true,
-                    //ValidAudience = Configuration["JWT:ValidAudience"],
-                    //ValidIssuer = Configuration["JWT:ValidIssuer"],
-                    //IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["JWT:Secret"]))
-
                     ValidateIssuer = true,
                     ValidIssuer = Configuration["Jwt:Issuer"],
                     ValidateAudience = true,
@@ -102,8 +75,6 @@ namespace BlazorDev.Autentica.Server
                     ClockSkew = TimeSpan.Zero
                 };
             });
-
-            //services.AddSwaggerGen();
 
             services.AddSwaggerGen(swagger =>
             {
@@ -123,7 +94,8 @@ namespace BlazorDev.Autentica.Server
                     Scheme = "Bearer",
                     BearerFormat = "JWT",
                     In = ParameterLocation.Header,
-                    Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
+                    Description = "Enter 'Bearer' [space] and then your valid token in the text input below."
+                    //Description = "Enter 'Bearer' [space] and then your valid token in the text input below.\r\n\r\nExample: \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9\"",
                 });
 
                 swagger.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -149,9 +121,6 @@ namespace BlazorDev.Autentica.Server
             {
                 app.UseDeveloperExceptionPage();
                 app.UseWebAssemblyDebugging();
-
-                //app.UseSwagger();
-                //app.UseSwaggerUI();
 
                 app.UseSwagger();
                 app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "ASP.NET 5 Web API v1"));

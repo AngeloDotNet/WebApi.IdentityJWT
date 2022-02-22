@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorDev.Autentica.Server", "BlazorDev.Autentica\Server\BlazorDev.Autentica.Server.csproj", "{0DA4F456-FC28-4536-B5D8-BF3861107B5A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorDev.Autentica.Server", "BlazorDev.Autentica\Server\BlazorDev.Autentica.Server.csproj", "{0DA4F456-FC28-4536-B5D8-BF3861107B5A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorDev.Autentica.Client", "BlazorDev.Autentica\Client\BlazorDev.Autentica.Client.csproj", "{5FAA092C-6D04-41AA-AAD0-EA6C9C1E2A6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorDev.Autentica.Client", "BlazorDev.Autentica\Client\BlazorDev.Autentica.Client.csproj", "{5FAA092C-6D04-41AA-AAD0-EA6C9C1E2A6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorDev.Autentica.Shared", "BlazorDev.Autentica\Shared\BlazorDev.Autentica.Shared.csproj", "{D32944E5-F0D1-4885-BE1D-7362F08F7B68}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorDev.Autentica.Shared", "BlazorDev.Autentica\Shared\BlazorDev.Autentica.Shared.csproj", "{D32944E5-F0D1-4885-BE1D-7362F08F7B68}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorDev.Autentica.Models", "BlazorDev.Autentica.Models\BlazorDev.Autentica.Models.csproj", "{B0F3F8ED-62C0-44BE-A633-E1CBA10D49AF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorDev.Autentica.Models", "BlazorDev.Autentica.Models\BlazorDev.Autentica.Models.csproj", "{B0F3F8ED-62C0-44BE-A633-E1CBA10D49AF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

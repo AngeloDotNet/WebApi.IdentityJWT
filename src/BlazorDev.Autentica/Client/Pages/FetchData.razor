@@ -1,6 +1,7 @@
 ﻿@page "/fetchdata"
 @using BlazorDev.Autentica.Shared
 @inject HttpClient Http
+@inject NavigationManager navigationManager
 
 <h1>Weather forecast</h1>
 
@@ -36,11 +37,22 @@ else
 }
 
 @code {
+    [CascadingParameter]
+    private Task<AuthenticationState> authenticationStateTask { get; set; }
+
     private WeatherForecast[] forecasts;
 
     protected override async Task OnInitializedAsync()
     {
-        forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");
-    }
+        var authenticationState = await authenticationStateTask;
 
+        if (!authenticationState.User.Identity.IsAuthenticated)
+        {
+            navigationManager.NavigateTo($"/noaccess");
+        }
+        else
+        {
+            forecasts = await Http.GetFromJsonAsync<WeatherForecast[]>("WeatherForecast");  
+        }
+    }
 }

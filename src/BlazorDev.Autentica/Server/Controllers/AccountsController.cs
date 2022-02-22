@@ -55,8 +55,7 @@ namespace BlazorDev.Autentica.Server.Controllers
                     errorsToReturn += Environment.NewLine;
                     errorsToReturn += $"Codice di errore: {error.Code}, {error.Description}";
                 }
-                return StatusCode(StatusCodes.Status500InternalServerError,
-                    errorsToReturn);
+                return StatusCode(StatusCodes.Status500InternalServerError, errorsToReturn);
             }
         }
 
@@ -66,8 +65,8 @@ namespace BlazorDev.Autentica.Server.Controllers
         [AllowAnonymous]
         public async Task<IActionResult> SignIn([FromBody] RegisterInputModel user)
         {
-            Microsoft.AspNetCore.Identity.SignInResult signInResult = await signInManager.PasswordSignInAsync
-                (user.Email, user.Password, false, false);
+            Microsoft.AspNetCore.Identity.SignInResult signInResult = await signInManager.PasswordSignInAsync(user.Email, user.Password, false, false);
+
             if (signInResult.Succeeded == true)
             {
                 IdentityUser identityUser = await userManager.FindByEmailAsync(user.Email);
@@ -84,10 +83,8 @@ namespace BlazorDev.Autentica.Server.Controllers
         [ApiExplorerSettings(IgnoreApi = true)]
         private async Task<string> GeneraJSONWebToken(IdentityUser identityUser)
         {
-            SymmetricSecurityKey symmetricSecurityKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(configuration["Jwt:SecurityKey"]));
-            SigningCredentials credentials = new SigningCredentials(
-                symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
+            SymmetricSecurityKey symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:SecurityKey"]));
+            SigningCredentials credentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
             IList<string> roleNames = await userManager.GetRolesAsync(identityUser);
 
@@ -100,12 +97,9 @@ namespace BlazorDev.Autentica.Server.Controllers
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 }.Union(roleNames.Select(role => new Claim(ClaimTypes.Role, role)));
 
-            JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(
-                configuration["Jwt:Issuer"],
-                configuration["Jwt:Audience"],
-                claims, DateTime.UtcNow, DateTime.UtcNow.AddMinutes(10),
-                    credentials
-                );
+            JwtSecurityToken jwtSecurityToken = new JwtSecurityToken(configuration["Jwt:Issuer"], configuration["Jwt:Audience"], claims, 
+                DateTime.UtcNow, DateTime.UtcNow.AddMinutes(10), credentials);
+
             return new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
         }
     }

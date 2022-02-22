@@ -1,12 +1,7 @@
 ﻿@inject AuthenticationStateProvider authenticationStateProvider
 @inject NavigationManager navigationManager
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-@*<div class="top-row pl-4 navbar navbar-dark">
-    <a class="navbar-brand" href="">BlazorDev.Autentica</a>
-    <button class="navbar-toggler" @onclick="ToggleNavMenu">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-</div>*@
 <div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BlazorDev.Autentica</a>
@@ -35,11 +30,16 @@
                         <span class="oi oi-list-rich" aria-hidden="true"></span> Fetch data
                     </NavLink>
                 </li>
-                <div class="nav-item px-3">
+                <li class="nav-item px-3">
+                    <NavLink class="nav-link" href="/" @onclick="SignOut">
+                        <span class="oi oi-account-logout" aria-hidden="true"></span> Sign Out
+                    </NavLink>
+                </li>
+                @*<div class="nav-item px-3">
                     <button class="btn btn-primary" @onclick="SignOut">
                         <span class="oi oi-account-logout" aria-hidden="true"></span> Sign Out
                     </button>
-                </div>
+                </div>*@
             </Authorized>
             <NotAuthorized>
                 <li class="nav-item px-3">
@@ -70,6 +70,7 @@
     private void SignOut()
     {
         ((AppAuthenticationStateProvider)authenticationStateProvider).SignOut();
-        navigationManager.NavigateTo("/signin");
+        localStorage.ClearAsync();
+        //navigationManager.NavigateTo("/signin");
     }
 }
